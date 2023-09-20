@@ -8,7 +8,6 @@ import imageio
 import os
 import requests
 
-
 # Function to get the class label from class index
 def get_class_label(class_index):
     class_labels = {
@@ -18,7 +17,6 @@ def get_class_label(class_index):
         3: "jj"
     }
     return class_labels.get(class_index, "Unknown")
-
 
 # Function to get description based on confidence
 def get_confidence_description(confidence):
@@ -31,16 +29,13 @@ def get_confidence_description(confidence):
     else:
         return "Less confident"
 
-
 # Function to convert a JPEG image to a simulated DNG
 def convert_jpeg_to_dng(jpeg_path, dng_path):
     with rawpy.imread(jpeg_path) as raw:
         rgb = raw.postprocess()
         imageio.imsave(dng_path, rgb)
 
-
 st.set_page_config(page_title="Areca.ai")
-
 
 def main():
     st.title("Areca Nut Classification")
@@ -77,30 +72,22 @@ def main():
             new_image_array = new_image_array / 255.0
 
             # Load the MobilenetV2 models
-            model_paths = [
-                "https://github.com/anivenk25/project-unknown/blob/main/custom_model.h5",
-                #r"C:\Users\aniru\PycharmProjects\areca nut model fp\mobilenetv2_model (1).h5",
-                "https://github.com/anivenk25/project-unknown/blob/main/custom_model_2.h5",
-                "https://github.com/anivenk25/project-unknown/blob/main/mobilenetv2_model.h5",
-                #"fine_tuned_model.h5",
-                #"trained_model_01.h5",
-                #"trained_model.h5",
-               # r"C:\Users\aniru\PycharmProjects\areca nut model fp\resnet50_model.h5",
-                #r"C:\Users\aniru\PycharmProjects\areca nut model fp\efficientnetb4_model.h5",
-                #r"C:\Users\aniru\PycharmProjects\areca nut model fp\vgg16_model.h5",
-
+            model_urls = [
+                "https://github.com/anivenk25/project-unknown/raw/main/custom_model.h5",
+                "https://github.com/anivenk25/project-unknown/raw/main/custom_model_2.h5",
+                "https://github.com/anivenk25/project-unknown/raw/main/mobilenetv2_model.h5",
             ]
 
             model_paths = []
-for model_url in model_urls:
-    model_filename = os.path.basename(model_url)
-    model_paths.append(model_filename)
+            for model_url in model_urls:
+                model_filename = os.path.basename(model_url)
+                model_paths.append(model_filename)
 
-# Download the models from GitHub
-for model_url, model_path in zip(model_urls, model_paths):
-    response = requests.get(model_url)
-    with open(model_path, "wb") as f:
-        f.write(response.content)
+            # Download the models from GitHub
+            for model_url, model_path in zip(model_urls, model_paths):
+                response = requests.get(model_url)
+                with open(model_path, "wb") as f:
+                    f.write(response.content)
 
             model_results = []
 
@@ -132,7 +119,6 @@ for model_url, model_path in zip(model_urls, model_paths):
             st.write("Predicted Class:", final_prediction['Predicted Class'])
             st.write("Confidence:", final_prediction['Probability'])
             st.write("Confidence Level:", get_confidence_description(final_prediction['Probability']))
-
 
 if __name__ == "__main__":
     main()
