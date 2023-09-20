@@ -7,6 +7,7 @@ import rawpy
 import imageio
 import os
 import requests
+import tempfile
 
 # Function to get the class label from class index
 def get_class_label(class_index):
@@ -79,12 +80,14 @@ def main():
             ]
 
             model_paths = []
+
+            # Download the models from GitHub to a temporary directory
+            temp_dir = tempfile.mkdtemp()
             for model_url in model_urls:
                 model_filename = os.path.basename(model_url)
-                model_paths.append(model_filename)
+                model_path = os.path.join(temp_dir, model_filename)
+                model_paths.append(model_path)
 
-            # Download the models from GitHub
-            for model_url, model_path in zip(model_urls, model_paths):
                 response = requests.get(model_url)
                 with open(model_path, "wb") as f:
                     f.write(response.content)
@@ -92,18 +95,16 @@ def main():
             model_results = []
 
             for model_path in model_paths:
-                with tf.Graph().as_default(), tf.compat.v1.Session() as sess:
-                    tf.compat.v1.keras.backend.set_session(sess)
-                    model = load_model(model_path)
-                    predictions = model.predict(new_image_array)
-                    predicted_class_index = np.argmax(predictions)
-                    predicted_class = get_class_label(predicted_class_index)
-                    confidence = np.max(predictions) * 100
-                    model_results.append({
-                        'Model Name': model_path,
-                        'Predicted Class': predicted_class,
-                        'Probability': confidence
-                    })
+                model = load_model(model_path)
+                predictions = model.predict(new_image_array)
+                predicted_class_index = np.argmax(predictions)
+                predicted_class = get_class_label(predicted_class_index)
+                confidence = np.max(predictions) * 100
+                model_results.append({
+                    'Model Name': model_path,
+                    'Predicted Class': predicted_class,
+                    'Probability': confidence
+                })
 
             # Display the classification results for each model
             st.write("Model Comparisons:")
