@@ -95,16 +95,19 @@ def main():
             model_results = []
 
             for model_path in model_paths:
-                model = load_model(model_path)
-                predictions = model.predict(new_image_array)
-                predicted_class_index = np.argmax(predictions)
-                predicted_class = get_class_label(predicted_class_index)
-                confidence = np.max(predictions) * 100
-                model_results.append({
+              try: 
+                 model = load_model(model_path)
+                 predictions = model.predict(new_image_array)
+                 predicted_class_index = np.argmax(predictions)
+                 predicted_class = get_class_label(predicted_class_index)
+                 confidence = np.max(predictions) * 100
+                 model_results.append({
                     'Model Name': model_path,
                     'Predicted Class': predicted_class,
                     'Probability': confidence
-                })
+                 })
+              except Exception as e:
+                  st.write(f"Error loading model from {model_path}: {e}")
 
             # Display the classification results for each model
             st.write("Model Comparisons:")
