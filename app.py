@@ -74,9 +74,9 @@ def main():
 
             # Load the MobilenetV2 models
             model_urls = [
-                "C:\Users\sudes\project-cook\project-areca\custom_model_2.h5",
-                "C:\Users\sudes\project-cook\project-areca\custom_model_2.h5",
-                "C:\Users\sudes\project-cook\project-areca\custom_model_2.h5",
+                r"C:\Users\sudes\project-cook\project-areca\custom_model_2.h5",
+                r"C:\Users\sudes\project-cook\project-areca\custom_model_2.h5",
+                r"C:\Users\sudes\project-cook\project-areca\custom_model_2.h5",
             ]
 
             model_results = []
