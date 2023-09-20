@@ -74,9 +74,9 @@ def main():
 
             # Load the MobilenetV2 models
             model_urls = [
-                "https://github.com/anivenk25/project-unknown/raw/main/mobilenetv2_model.h5",
-                "https://github.com/anivenk25/project-unknown/raw/main/custom_model_2.h5",
-                "https://github.com/anivenk25/project-unknown/raw/main/custom_model.h5",
+                "C:\Users\sudes\project-cook\project-areca\custom_model_2.h5",
+                "C:\Users\sudes\project-cook\project-areca\custom_model_2.h5",
+                "C:\Users\sudes\project-cook\project-areca\custom_model_2.h5",
             ]
 
             model_results = []
