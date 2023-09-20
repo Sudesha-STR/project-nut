@@ -77,10 +77,10 @@ def main():
 
             # Load the MobilenetV2 models
             model_paths = [
-                "https://github.com/Sudesha-STR/project-cook/blob/main/mobilenetv2_model.h5",
+                "mobilenetv2_model.h5",
                 #r"C:\Users\aniru\PycharmProjects\areca nut model fp\mobilenetv2_model (1).h5",
-                "https://github.com/Sudesha-STR/project-cook/blob/main/custom_model_2.h5",
-                "https://github.com/Sudesha-STR/project-cook/blob/main/custom_model.h5",
+                "custom_model_2.h5",
+                "custom_model.h5",
                 #"fine_tuned_model.h5",
                 #"trained_model_01.h5",
                 #"trained_model.h5",
