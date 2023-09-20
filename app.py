@@ -74,40 +74,34 @@ def main():
 
             # Load the MobilenetV2 models
             model_urls = [
-                r"mobilenetv2_model.h5",
-                r"custom_model_2.h5",
-                r"custom_model.h5",
+                "https://github.com/anivenk25/project-unknown/raw/main/mobilenetv2_model.h5",
+                "https://github.com/anivenk25/project-unknown/raw/main/custom_model_2.h5",
+                "https://github.com/anivenk25/project-unknown/raw/main/custom_model.h5",
             ]
-
-            model_paths = []
-
-            # Download the models from GitHub to a temporary directory
-            temp_dir = tempfile.mkdtemp()
-            for model_url in model_urls:
-                model_filename = os.path.basename(model_url)
-                model_path = os.path.join(temp_dir, model_filename)
-                model_paths.append(model_path)
-
-                response = requests.get(model_url)
-                with open(model_path, "wb") as f:
-                    f.write(response.content)
 
             model_results = []
 
-            for model_path in model_paths:
-              try: 
-                 model = load_model(model_path)
-                 predictions = model.predict(new_image_array)
-                 predicted_class_index = np.argmax(predictions)
-                 predicted_class = get_class_label(predicted_class_index)
-                 confidence = np.max(predictions) * 100
-                 model_results.append({
-                    'Model Name': model_path,
-                    'Predicted Class': predicted_class,
-                    'Probability': confidence
-                 })
-              except Exception as e:
-                  st.write(f"Error loading model from {model_path}: {e}")
+            for model_url in model_urls:
+                try:
+                    # Download the model to a temporary directory
+                    with tempfile.NamedTemporaryFile(delete=False) as temp_model_file:
+                        temp_model_path = temp_model_file.name
+                        response = requests.get(model_url)
+                        temp_model_file.write(response.content)
+
+                    # Load the model and make predictions
+                    model = load_model(temp_model_path)
+                    predictions = model.predict(new_image_array)
+                    predicted_class_index = np.argmax(predictions)
+                    predicted_class = get_class_label(predicted_class_index)
+                    confidence = np.max(predictions) * 100
+                    model_results.append({
+                        'Model Name': os.path.basename(model_url),
+                        'Predicted Class': predicted_class,
+                        'Probability': confidence
+                    })
+                except Exception as e:
+                    st.write(f"Error loading model from {model_url}: {e}")
 
             # Display the classification results for each model
             st.write("Model Comparisons:")
@@ -117,12 +111,9 @@ def main():
                 st.write("Confidence:", result['Probability'])
                 st.write("Confidence Level:", get_confidence_description(result['Probability']))
 
-            # Calculate the final prediction based on the model with the highest confidence
-            final_prediction = max(model_results, key=lambda x: x['Probability'])
-            st.write("Final Prediction:")
-            st.write("Predicted Class:", final_prediction['Predicted Class'])
-            st.write("Confidence:", final_prediction['Probability'])
-            st.write("Confidence Level:", get_confidence_description(final_prediction['Probability']))
-
-if __name__ == "__main__":
-    main()
+            if model_results:
+                # Calculate the final prediction based on the model with the highest confidence
+                final_prediction = max(model_results, key=lambda x: x['Probability'])
+                st.write("Final Prediction:")
+                st.write("Predicted Class:", final_prediction['Predicted Class'])
+                st.write("Confidence:", final_prediction['Probability'])
