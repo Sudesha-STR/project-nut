@@ -6,6 +6,7 @@ from tensorflow.keras.preprocessing.image import load_img, img_to_array
 import rawpy
 import imageio
 import os
+import requests
 
 
 # Function to get the class label from class index
@@ -89,6 +90,17 @@ def main():
                 #r"C:\Users\aniru\PycharmProjects\areca nut model fp\vgg16_model.h5",
 
             ]
+
+            model_paths = []
+for model_url in model_urls:
+    model_filename = os.path.basename(model_url)
+    model_paths.append(model_filename)
+
+# Download the models from GitHub
+for model_url, model_path in zip(model_urls, model_paths):
+    response = requests.get(model_url)
+    with open(model_path, "wb") as f:
+        f.write(response.content)
 
             model_results = []
 
